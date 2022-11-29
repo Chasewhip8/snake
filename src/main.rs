@@ -1,15 +1,16 @@
 extern crate core;
 
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
+
+use pancurses::{Attribute, Attributes, initscr, Window};
+
+use crate::control::get_control;
+use crate::state::{Board, Point, State};
+
 mod state;
 mod control;
 
-use std::time::{Duration, SystemTime, UNIX_EPOCH};
-use pancurses::{A_BLINK, A_COLOR, A_NORMAL, Attribute, Attributes, COLOR_BLACK, color_content, COLOR_GREEN, COLOR_PAIR, COLOR_PAIRS, COLOR_RED, COLOR_YELLOW, ColorPair, COLORS, init_pair, initscr, PDC_COLOR_SHIFT, Window};
-use pancurses::Attribute::Blink;
-use crate::control::get_control;
-use crate::state::{Board, Point};
-
-const GAME_SPEED_MS: u64 = 100;
+const GAME_SPEED_MS: u64 = 30;
 
 fn main() {
     let frame_ms_time = Duration::from_millis(GAME_SPEED_MS);
@@ -29,7 +30,7 @@ fn main() {
             if let Some(control) = get_control(window) {
                 Board::change_control(board, control);
             }
-            std::thread::sleep(Duration::from_millis(100));
+            std::thread::sleep(Duration::from_millis(5));
         }
 
         // Use the previously captured latest control to execute game logic on
@@ -37,6 +38,10 @@ fn main() {
 
         // Display the game board.
         display_game(board, window);
+
+        if *Board::state(board) == State::GameOver {
+            return;
+        }
     }
 }
 
@@ -60,8 +65,14 @@ fn display_game(board: &mut Board, window: &Window) {
 }
 
 fn update_logic(board: &mut Board){
+    // Check Collision and set State Flags
     Board::check_collision_death(board);
-    Board::move_snake(board); // Execute the current move inside board.move_direction
     Board::check_collision_food(board);
+
+    // Execute the current move inside board.move_direction
+    Board::move_snake(board);
     Board::chop_tail(board);
+
+    // Spawn Fruit if none are pressent
+    Board::spawn_fruit(board);
 }
