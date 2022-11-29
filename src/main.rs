@@ -17,7 +17,7 @@ fn main() {
     let mut frame_end_time;
 
     let board = &mut Board::new(78, 24);
-    let window = &mut create_window(board);
+    let window = &mut create_window();
 
     loop {
         frame_end_time = SystemTime::now().duration_since(UNIX_EPOCH)
@@ -45,8 +45,8 @@ fn main() {
     }
 }
 
-fn create_window(board: &mut Board) -> Window {
-    let mut window = initscr();
+fn create_window() -> Window {
+    let window = initscr();
     window.timeout(10);
     window.nodelay(false);
     window.attrset(Attributes::default() | Attribute::Bold);
