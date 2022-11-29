@@ -138,25 +138,17 @@ impl Board {
             return;
         }
 
-        let frames_since_fruit = Board::frames_since_fruit(board);
+        let frames_since_fruit = board.frames_since_fruit;
         if frames_since_fruit < 5 {
             board.frames_since_fruit += 1;
             return;
         }
 
         let mut rng = thread_rng();
-        let pos_x = rng.gen_range(4..(Board::width(board) - 4));
-        let pos_y = rng.gen_range(4..(Board::height(board) - 4));
+        let pos_x = rng.gen_range(4..(board.width - 4));
+        let pos_y = rng.gen_range(4..(board.height - 4));
         board.fruit = Some(Point::from(pos_x, pos_y));
         board.frames_since_fruit = 0;
-    }
-
-    pub fn width(&self) -> u8 {
-        self.width
-    }
-
-    pub fn height(&self) -> u8 {
-        self.height
     }
 
     pub fn state(&self) -> &State {
@@ -169,10 +161,6 @@ impl Board {
 
     pub fn fruit(&self) -> &Option<Point> {
         &self.fruit
-    }
-    
-    pub fn frames_since_fruit(&self) -> u16 {
-        self.frames_since_fruit
     }
 }
 
