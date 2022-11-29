@@ -2,7 +2,8 @@ extern crate core;
 
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
-use pancurses::{Attribute, Attributes, initscr, Window};
+use pancurses::{Attribute, Attributes, COLOR_BLACK, COLOR_GREEN, init_pair, initscr, Window};
+use pancurses::Attribute::Blink;
 
 use crate::control::get_control;
 use crate::state::{Board, Point, State};
@@ -10,7 +11,7 @@ use crate::state::{Board, Point, State};
 mod state;
 mod control;
 
-const GAME_SPEED_MS: u64 = 30;
+const GAME_SPEED_MS: u64 = 100;
 
 fn main() {
     let frame_ms_time = Duration::from_millis(GAME_SPEED_MS);
@@ -51,7 +52,7 @@ fn main() {
 fn create_window() -> Window {
     let window = initscr();
     window.timeout(10);
-    window.nodelay(false);
+    //window.nodelay(false); Required for windows??
     window.attrset(Attributes::default() | Attribute::Bold);
     return window;
 }
@@ -65,6 +66,7 @@ fn display_game(board: &mut Board, window: &Window) {
     for fruit in Board::fruit(board) {
         window.mvaddch(Point::y(fruit) as i32, Point::x(fruit) as i32,'O');
     }
+    window.mv(0, 0);
     window.refresh();
 }
 
