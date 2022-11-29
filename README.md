@@ -28,7 +28,7 @@ high-performance blockchains such as Solana which it is used in the backend node
 of smart contracts.
 
 The world doesn't stop at embedded systems and blockchains though many cross-platform apps are being built 
-using an emerging framework code-named (Tauri)[https://tauri.app/]. Tauri provides a way to write a desktop
+using an emerging framework code-named [Tauri](https://tauri.app/). Tauri provides a way to write a desktop
 apps backend on rust and then communicate to any UI/UX or web framework through a rich messaging system!
 
 There are many more emerging high-performance frameworks though and the world is using Rust more and more 
@@ -51,7 +51,7 @@ More in depth information on the expansive primitive types provided can be found
 
 ### Additional Types
 Unlike other low level system languages rust provides additional types to aid in development as follows.
- - Box - A value stored inside of the heap
+ - Box - A value stored inside the heap
  - String - Instead of static or mutable these strings are dynamic
  - Vec<T> - A dynamic array implementation similar to Java’s ArrayList.
  - Option<T> - An option type used heavily in the language, more on this later.
@@ -106,7 +106,7 @@ these rules.
 We will demonstrate a few of these below however, Rust is a very feature rich language we will not be 
 able to cover everything that makes it such a great language to work in. However, the developers have
 done an amazing job at putting together documentation that goes more in depth on these different language
-features which can be found (here)[https://doc.rust-lang.org/book/ch03-00-common-programming-concepts.html].
+features which can be found [here](https://doc.rust-lang.org/book/ch03-00-common-programming-concepts.html).
 
 ## Setup Environment
 Instructions below will be for linux based machines, find relevant sources in Quick Links to assist on
@@ -241,6 +241,23 @@ impl Point {
         self.y
     }
 }
+```
+
+#### Results, Options and if let
+Rust relies heavily on its extensive type system which brings us Options and Results. As we can see here an
+option type is used to indicate sometimes a Point can be assigned to `board.fruit`, other times it will be 
+`None`. Result<T,E> is another enum which allows us to hold a value and a possible error. Both of those types can
+be used in a similar manner with if let to define a variable and enter a scope conditionally.
+```rs
+    pub fn check_collision_food(board: &mut Self){
+        if let Some(fruit) = &board.fruit {
+            let last_body = board.snake.last().cloned().expect("Invalid State, Snake is empty");
+            if *fruit == last_body {
+                board.state = FruitCollected;
+                board.fruit = None;
+            }
+        }
+    }
 ```
 
 ## External Links

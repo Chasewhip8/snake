@@ -120,7 +120,7 @@ impl Board {
         }
     }
 
-    //
+    /// Remove the tail of the snake
     pub fn chop_tail(board: &mut Self){
         if board.state == FruitCollected {
             board.state = Running;
@@ -135,10 +135,12 @@ impl Board {
         board.snake.retain(|body| body != &last_body);
     }
 
+    /// Switch the control in the state
     pub fn change_control(board: &mut Self, control: Control) {
         board.move_direction = control;
     }
 
+    /// Spawn a fruit randomly on the map
     pub fn spawn_fruit(board: &mut Self){
         if let Some(_fruit) = &board.fruit {
             return;
