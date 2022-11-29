@@ -44,6 +44,7 @@ pub struct Board {
 }
 
 impl Board {
+    /// Create a new instance of the board with default values
     pub fn new(width: u8, height: u8) -> Self {
         let tail_point = Point::from(
             width / 2 as u8,
@@ -68,6 +69,7 @@ impl Board {
         }
     }
 
+    /// Get the next point where the snake + the user input is facing
     fn get_next_point(board: &Self) -> Point {
         let head = board.snake.last().expect("Invalid Game State, Snake is empty");
         return match board.move_direction {
@@ -78,6 +80,7 @@ impl Board {
         }
     }
 
+    /// Move the snake to position determined by get_next_point
     pub fn move_snake(board: &mut Self){
         if board.state == GameOver {
             return;
@@ -87,6 +90,7 @@ impl Board {
         board.snake.push(next_move);
     }
 
+    /// Check for collisions against the walls and itself, sets the game state to GameOver if fails.
     pub fn check_collision_death(board: &mut Self){
         for snake_body in &board.snake {
             if snake_body.x <= 0 || snake_body.x >= board.width
@@ -105,6 +109,7 @@ impl Board {
         }
     }
 
+    /// Check the collision against food on the game board.
     pub fn check_collision_food(board: &mut Self){
         if let Some(fruit) = &board.fruit {
             let last_body = board.snake.last().cloned().expect("Invalid State, Snake is empty");
@@ -115,6 +120,7 @@ impl Board {
         }
     }
 
+    //
     pub fn chop_tail(board: &mut Self){
         if board.state == FruitCollected {
             board.state = Running;

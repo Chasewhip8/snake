@@ -20,6 +20,7 @@ fn main() {
     let window = &mut create_window();
 
     loop {
+        // Get the start time + the frame delay in ms
         frame_end_time = SystemTime::now().duration_since(UNIX_EPOCH)
             .unwrap()
             .checked_add(frame_ms_time)
@@ -39,12 +40,14 @@ fn main() {
         // Display the game board.
         display_game(board, window);
 
+        // Quit the game if collision checks fail
         if *Board::state(board) == State::GameOver {
             return;
         }
     }
 }
 
+/// Create a window object with correct input settings configured
 fn create_window() -> Window {
     let window = initscr();
     window.timeout(10);
@@ -53,6 +56,7 @@ fn create_window() -> Window {
     return window;
 }
 
+/// Display the game onto the terminal
 fn display_game(board: &mut Board, window: &Window) {
     window.clear();
     for snake_body in Board::snake(board) {
@@ -65,14 +69,14 @@ fn display_game(board: &mut Board, window: &Window) {
 }
 
 fn update_logic(board: &mut Board){
-    // Check Collision and set State Flags
+    /// Check Collision and set State Flags
     Board::check_collision_death(board);
     Board::check_collision_food(board);
 
-    // Execute the current move inside board.move_direction
+    /// Execute the current move inside board.move_direction
     Board::move_snake(board);
     Board::chop_tail(board);
 
-    // Spawn Fruit if none are pressent
+    /// Spawn Fruit if none are pressent
     Board::spawn_fruit(board);
 }

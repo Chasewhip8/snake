@@ -22,6 +22,7 @@ impl Control {
     }
 }
 
+/// Get the latest control or none from the window.
 pub fn get_control(window: &Window) -> Option<Control> {
     if let Some(Character(c)) = window.getch() {
         return Control::from(c);
