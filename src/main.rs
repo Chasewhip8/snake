@@ -69,14 +69,14 @@ fn display_game(board: &mut Board, window: &Window) {
 }
 
 fn update_logic(board: &mut Board){
-    /// Check Collision and set State Flags
+    // Check Collision and set State Flags
     Board::check_collision_death(board);
     Board::check_collision_food(board);
 
-    /// Execute the current move inside board.move_direction
+    // Execute the current move inside board.move_direction
     Board::move_snake(board);
     Board::chop_tail(board);
 
-    /// Spawn Fruit if none are pressent
+    // Spawn Fruit if none are pressent
     Board::spawn_fruit(board);
 }
