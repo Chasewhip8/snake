@@ -70,9 +70,9 @@ impl Board {
     }
 
     /// Get the next point where the snake + the user input is facing
-    fn get_next_point(board: &Self) -> Point {
-        let head = board.snake.last().expect("Invalid Game State, Snake is empty");
-        return match board.move_direction {
+    fn get_next_point(&self) -> Point {
+        let head = self.snake.last().expect("Invalid Game State, Snake is empty");
+        return match self.move_direction {
             Control::UP => Point::from(head.x, head.y - 1),
             Control::DOWN => Point::from(head.x, head.y + 1),
             Control::LEFT => Point::from(head.x - 1, head.y),
@@ -81,82 +81,81 @@ impl Board {
     }
 
     /// Move the snake to position determined by get_next_point
-    pub fn move_snake(board: &mut Self){
-        if board.state == GameOver {
+    pub fn move_snake(&mut self){
+        if self.state == GameOver {
             return;
         }
 
-        let next_move = Board::get_next_point(board);
-        board.snake.push(next_move);
+        self.snake.push(self.get_next_point());
     }
 
     /// Check for collisions against the walls and itself, sets the game state to GameOver if fails.
-    pub fn check_collision_death(board: &mut Self){
-        for snake_body in &board.snake {
-            if snake_body.x <= 0 || snake_body.x >= board.width
-                || snake_body.y <= 0 || snake_body.y >= board.height {
-                board.state = GameOver;
+    pub fn check_collision_death(&mut self){
+        for snake_body in &self.snake {
+            if snake_body.x <= 0 || snake_body.x >= self.width
+                || snake_body.y <= 0 || snake_body.y >= self.height {
+                self.state = GameOver;
                 return;
             }
         }
 
-        let next_move = Board::get_next_point(board);
-        for snake_body in &board.snake {
+        let next_move = self.get_next_point();
+        for snake_body in &self.snake {
             if next_move == *snake_body {
-                board.state = GameOver;
+                self.state = GameOver;
                 return;
             }
         }
     }
 
     /// Check the collision against food on the game board.
-    pub fn check_collision_food(board: &mut Self){
-        if let Some(fruit) = &board.fruit {
-            let last_body = board.snake.last().cloned().expect("Invalid State, Snake is empty");
+    pub fn check_collision_food(&mut self){
+        if let Some(fruit) = &self.fruit {
+            let last_body = self.snake.last().cloned().expect("Invalid State, Snake is empty");
             if *fruit == last_body {
-                board.state = FruitCollected;
-                board.fruit = None;
+                self.state = FruitCollected;
+                self.fruit = None;
             }
         }
     }
 
     /// Remove the tail of the snake
-    pub fn chop_tail(board: &mut Self){
-        if board.state == FruitCollected {
-            board.state = Running;
+    pub fn chop_tail(&mut self){
+        if self.state == FruitCollected {
+            self.state = Running;
             return;
         }
 
-        if board.state != Running {
+        if self.state != Running {
             return;
         }
 
-        let last_body = board.snake.first().cloned().expect("Invalid State, Snake is empty");
-        board.snake.retain(|body| body != &last_body);
+        let last_body = self.snake.first().cloned().expect("Invalid State, Snake is empty");
+        self.snake.retain(|body| body != &last_body);
     }
 
     /// Switch the control in the state
-    pub fn change_control(board: &mut Self, control: Control) {
-        board.move_direction = control;
+    pub fn change_control(&mut self, control: Control) {
+        self.move_direction = control;
     }
 
     /// Spawn a fruit randomly on the map
-    pub fn spawn_fruit(board: &mut Self){
-        if let Some(_fruit) = &board.fruit {
+    pub fn spawn_fruit(&mut self){
+        if let Some(_fruit) = &self.fruit {
             return;
         }
 
-        let frames_since_fruit = board.frames_since_fruit;
+        let frames_since_fruit = self.frames_since_fruit;
         if frames_since_fruit < 5 {
-            board.frames_since_fruit += 1;
+            self.frames_since_fruit += 1;
             return;
         }
 
         let mut rng = thread_rng();
-        let pos_x = rng.gen_range(4..(board.width - 4));
-        let pos_y = rng.gen_range(4..(board.height - 4));
-        board.fruit = Some(Point::from(pos_x, pos_y));
-        board.frames_since_fruit = 0;
+        let pos_x = rng.gen_range(4..(self.width - 4));
+        let pos_y = rng.gen_range(4..(self.height - 4));
+        self.fruit = Some(Point::from(pos_x, pos_y));
+        self.frames_since_fruit = 0;
     }
 
     pub fn state(&self) -> &State {

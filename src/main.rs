@@ -29,7 +29,7 @@ fn main() {
         // Capture inputs as they come in and wait until the next frame is needed
         while SystemTime::now().duration_since(UNIX_EPOCH).unwrap() < frame_end_time {
             if let Some(control) = get_control(window) {
-                Board::change_control(board, control);
+                board.change_control(control);
             }
             std::thread::sleep(Duration::from_millis(5));
         }
@@ -41,7 +41,7 @@ fn main() {
         display_game(board, window);
 
         // Quit the game if collision checks fail
-        if *Board::state(board) == State::GameOver {
+        if *board.state() == State::GameOver {
             return;
         }
     }
@@ -51,7 +51,6 @@ fn main() {
 fn create_window() -> Window {
     let window = initscr();
     window.timeout(10);
-    //window.nodelay(false); Required for windows??
     window.attrset(Attributes::default() | Attribute::Bold);
     return window;
 }
@@ -59,10 +58,10 @@ fn create_window() -> Window {
 /// Display the game onto the terminal
 fn display_game(board: &mut Board, window: &Window) {
     window.clear();
-    for snake_body in Board::snake(board) {
+    for snake_body in board.snake() {
         window.mvaddch(Point::y(snake_body) as i32, Point::x(snake_body) as i32,'X');
     }
-    for fruit in Board::fruit(board) {
+    for fruit in board.fruit() {
         window.mvaddch(Point::y(fruit) as i32, Point::x(fruit) as i32,'O');
     }
     window.mv(0, 0);
@@ -71,13 +70,13 @@ fn display_game(board: &mut Board, window: &Window) {
 
 fn update_logic(board: &mut Board){
     // Check Collision and set State Flags
-    Board::check_collision_death(board);
-    Board::check_collision_food(board);
+    board.check_collision_death();
+    board.check_collision_food();
 
     // Execute the current move inside board.move_direction
-    Board::move_snake(board);
-    Board::chop_tail(board);
+    board.move_snake();
+    board.chop_tail();
 
     // Spawn Fruit if none are pressent
-    Board::spawn_fruit(board);
+    board.spawn_fruit();
 }
