@@ -3,6 +3,7 @@ use pancurses::Window;
 
 use crate::control::Control::{DOWN, LEFT, RIGHT, UP};
 
+#[derive(PartialEq, Clone, Copy)]
 pub enum Control {
     UP,
     DOWN,
@@ -13,11 +14,20 @@ pub enum Control {
 impl Control {
     pub fn from(c: char) -> Option<Control> {
         match c {
-            'w' => Some(UP),
-            'a' => Some(LEFT),
-            's' => Some(DOWN),
-            'd' => Some(RIGHT),
+            'w' | 'i' => Some(UP),
+            'a' | 'j' => Some(LEFT),
+            's' | 'k' => Some(DOWN),
+            'd' | 'l' => Some(RIGHT),
             _ => None
+        }
+    }
+
+    pub fn opposite(control: Control) -> Control {
+        match control {
+            UP => DOWN,
+            DOWN => UP,
+            RIGHT => LEFT,
+            LEFT => RIGHT
         }
     }
 }

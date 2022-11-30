@@ -1,7 +1,7 @@
 use rand::prelude::*;
 
 use crate::control::Control;
-use crate::control::Control::RIGHT;
+use crate::control::Control::{DOWN, RIGHT, UP, LEFT};
 use crate::state::State::{FruitCollected, GameOver, Running};
 
 #[derive(PartialEq, Clone)]
@@ -73,9 +73,9 @@ impl Board {
     fn get_next_point(&self) -> Point {
         let head = self.snake.last().expect("Invalid Game State, Snake is empty");
         return match self.move_direction {
-            Control::UP => Point::from(head.x, head.y - 1),
-            Control::DOWN => Point::from(head.x, head.y + 1),
-            Control::LEFT => Point::from(head.x - 1, head.y),
+            UP => Point::from(head.x, head.y - 1),
+            DOWN => Point::from(head.x, head.y + 1),
+            LEFT => Point::from(head.x - 1, head.y),
             _ => Point::from(head.x + 1, head.y)
         }
     }
@@ -136,7 +136,9 @@ impl Board {
 
     /// Switch the control in the state
     pub fn change_control(&mut self, control: Control) {
-        self.move_direction = control;
+        if Control::opposite(control) != self.move_direction {
+            self.move_direction = control;
+        }
     }
 
     /// Spawn a fruit randomly on the map

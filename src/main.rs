@@ -3,6 +3,7 @@ extern crate core;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 use pancurses::{Attribute, Attributes, initscr, Window};
+use crate::control::Control::RIGHT;
 
 use crate::control::get_control;
 use crate::state::{Board, Point, State};
@@ -15,6 +16,7 @@ const GAME_SPEED_MS: u64 = 100;
 fn main() {
     let frame_ms_time = Duration::from_millis(GAME_SPEED_MS);
     let mut frame_end_time;
+    let mut next_control = RIGHT;
 
     let board = &mut Board::new(78, 24);
     let window = &mut create_window();
@@ -29,10 +31,13 @@ fn main() {
         // Capture inputs as they come in and wait until the next frame is needed
         while SystemTime::now().duration_since(UNIX_EPOCH).unwrap() < frame_end_time {
             if let Some(control) = get_control(window) {
-                board.change_control(control);
+                next_control = control;
             }
             std::thread::sleep(Duration::from_millis(5));
         }
+
+        // Set control
+        board.change_control(next_control);
 
         // Use the previously captured latest control to execute game logic on
         update_logic(board);
