@@ -260,6 +260,15 @@ be used in a similar manner with if let to define a variable and enter a scope c
     }
 ```
 
+## Language Comparison
+![Chart](https://i.imgur.com/NPD08PG.png)
+- Imperative: The program describes the steps that change the state of the computer
+- Functional: Programs are constructed by applying and composing functions
+- Procedural: A list of instructions is declared to tell the computer what it should do step-by-step to finish
+- Generic: Types are to-be-specified-later and are then instantiated when needed
+- Reflective: The language has the ability to change its own code and syntax at runtime
+- Event-driven: The flow of the program is determined by events such as user actions
+
 ## External Links
 Here is a list of external links that provided useful information and examples used in this writeup.
  - Rust Installer: https://rustup.rs/
