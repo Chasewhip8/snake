@@ -2,8 +2,7 @@ extern crate core;
 
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
-use pancurses::{Attribute, Attributes, COLOR_BLACK, COLOR_GREEN, init_pair, initscr, Window};
-use pancurses::Attribute::Blink;
+use pancurses::{Attribute, Attributes, initscr, Window};
 
 use crate::control::get_control;
 use crate::state::{Board, Point, State};
